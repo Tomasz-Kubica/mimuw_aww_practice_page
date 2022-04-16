@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<script type="module">
+  import {add_form_check_listener} from './modul.mjs';
+  import {add_focus_listeners} from './modul.mjs';
+  let form = document.querySelector(".reserve_form");
+  add_form_check_listener(form);
+  let body = document.querySelector("body");
+  add_focus_listeners(body);
+</script>
+
+<html lang="en">
+
+<head>
+  <title>Formularz - rezerwacja wycieczki</title>
+  <link rel="stylesheet" href="common_style.css">
+  <link rel="stylesheet" href="formularz_style.css">
+</head>
+
+<body>
+  <header>
+    <img src="logol.png" alt="logo" class="logo">
+    <nav>
+      <menu>
+        <a href=""> wyczieczki lotnicze </a>
+        <a href=""> wyczieczki autokarowe </a>
+        <a href=""> nowości </a>
+        <a href=""> przewodnicy </a>
+        <a href=""> Moje konto </a>
+      </menu>
+    </nav>
+  </header>
+
+  <form class="reserve_form">
+    <label for="name">imię</label>
+    <input type="text" id="name">
+    <p class="error_message"></p>
+    <label for="surname">nazwisko</label>
+    <input type="text" id="surname">
+    <p class="error_message"></p>
+    <label for="ile_osob">ile osób</label>
+    <input type="number" id="ile_osob">
+    <label for="data_poczatek">data rozpoczęcia</label>
+    <input type="date" id="data_poczatek">
+    <button type="submit">submit</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">
+          pole 1
+        </th>
+        <th scope="col">
+          pole 2
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          test 1.1
+        </td>
+        <td>
+          test 1.2
+        </td>
+      </tr>
+      <tr>
+        <td>
+          test 2.1
+        </td>
+        <td>
+          test 2.2
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <footer>
+    <p>Biuro podróży, 2022</p>
+    <a href="">O firmie</a>
+    <a href="">polityka prywatności</a>
+    <a href="">Kontakt</a>
+  </footer>
+
+  <!-- <div class="success-popup">
+
+    <div class="success-popup-content">
+      <p>
+        test
+      </p>
+      <button id="close" type="button"> close </button>
+    </div>
+  </div> -->
+
+</body>
+
+</html>

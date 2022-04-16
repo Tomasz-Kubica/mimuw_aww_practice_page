@@ -1,0 +1,88 @@
+/* https://coolors.co/ffbc42-d64550-1c1d21-0e79b2-2c6e49 */
+
+html {
+  background-color: #747274;
+}
+
+body {
+  background-color: #8DAD85;
+}
+
+.content {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+header {
+  background-color: #054A29;
+}
+
+footer {
+  background-color: #022864;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 2%;
+  padding-right: 2%;
+  margin-top: 10px;
+}
+
+header {
+  display: flex;
+  align-self: center;
+}
+
+header nav {
+  align-self: center;
+  flex: 1;
+  padding-right: 50px;
+}
+
+header nav menu {
+  display: flex;
+  justify-content: space-between;
+  align-self: center;
+}
+
+header nav menu a {
+  text-decoration: none;
+  color: black;
+  align-self: center;
+}
+
+footer a {
+  text-decoration: none;
+  color: black;
+  align-self: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Arial, sans-serif;
+}
+
+body {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.logo {
+  /* size: 2em; */
+  width: 60px;
+  height: 60px;
+  object-fit: scale-down;
+  align-self: center;
+}
+
+@media screen and (max-width: 1000px) {
+  header {
+    flex-direction: column;
+  }
+
+  header nav menu {
+    flex-direction: column;
+  }
+
+  header nav menu a {
+    margin-top: 0.5ex;
+  }
+}

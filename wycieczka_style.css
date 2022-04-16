@@ -1,0 +1,36 @@
+.trip-image {
+  height: 300px;
+  width: 400px;
+  object-fit: cover;
+  float: left;
+  margin: 0.5em;
+}
+
+.most-important-info-list {
+  list-style: '- ';
+}
+
+.bottom-buttons-container {
+  overflow: hidden;
+}
+
+.bottom-button {
+  border: 1px solid black;
+  padding: 5px;
+  background-color: #187A00;
+  text-decoration: none;
+  color: black;
+  font-size: 20px;
+}
+
+.bottom-button:hover {
+  background-color: #21A300;
+}
+
+.left-button {
+  float: left;
+}
+
+.right-button {
+  float: right;
+}

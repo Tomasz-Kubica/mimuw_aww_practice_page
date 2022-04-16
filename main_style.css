@@ -1,0 +1,66 @@
+.content {
+  display: flex;
+}
+
+.content main {
+  order: 1;
+  flex: 5;
+}
+
+.content aside {
+  order: 2;
+  flex: 1;
+}
+
+.content main section {
+  display: flex;
+}
+
+.content main section img {
+  height: 200px;
+  width: 225px;
+  object-fit: cover;
+  margin: 0.5em;
+}
+
+.content main section .opis {
+  margin-right: 2em;
+}
+
+.content main section .opis {
+  flex: 1;
+}
+
+.content main section .opis .cena {
+  float: left;
+  margin-top: 1ex;
+  margin-bottom: 1ex;
+}
+
+.content main section .opis .streszczenie {
+  font-size: 22px;
+}
+
+.content main section .opis a {
+  float: right;
+  margin-top: 1ex;
+  margin-bottom: 1ex;
+}
+
+aside h2 {
+  font-size: 20px;
+}
+
+aside .promocje p, aside .promocje a {
+  margin-left: 2em;
+}
+
+@media screen and (max-width: 1000px) {
+  aside .porady {
+    display: none;
+  }
+
+  .content {
+    flex-direction: column;
+  }
+}
