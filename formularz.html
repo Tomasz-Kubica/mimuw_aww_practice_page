@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
 <script type="module">
-  import {add_form_check_listener} from './modul.mjs';
-  import {add_focus_listeners} from './modul.mjs';
+  import {add_form_check_listener} from './scripts/modul.mjs';
+  import {add_focus_listeners} from './scripts/modul.mjs';
   let form = document.querySelector(".reserve_form");
   add_form_check_listener(form);
   let body = document.querySelector("body");
@@ -13,13 +13,13 @@
 
 <head>
   <title>Formularz - rezerwacja wycieczki</title>
-  <link rel="stylesheet" href="common_style.css">
-  <link rel="stylesheet" href="formularz_style.css">
+  <link rel="stylesheet" href="styles/common_style.css">
+  <link rel="stylesheet" href="styles/formularz_style.css">
 </head>
 
 <body>
   <header>
-    <img src="logol.png" alt="logo" class="logo">
+    <img src="images/logol.png" alt="logo" class="logo">
     <nav>
       <menu>
         <a href=""> wyczieczki lotnicze </a>
@@ -82,16 +82,6 @@
     <a href="">polityka prywatności</a>
     <a href="">Kontakt</a>
   </footer>
-
-  <!-- <div class="success-popup">
-
-    <div class="success-popup-content">
-      <p>
-        test
-      </p>
-      <button id="close" type="button"> close </button>
-    </div>
-  </div> -->
 
 </body>
 
