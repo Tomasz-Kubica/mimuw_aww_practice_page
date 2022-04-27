@@ -2,17 +2,18 @@
   "dependencies": {
     "express": "^4.17.3",
     "http-serve": "^1.0.1",
-    "npm-watch": "^0.11.0"
+    "npm-watch": "^0.11.0",
+    "pug": "^3.0.2"
   },
   "author": "Tomasz Kubica",
   "scripts": {
-    "start": "http-serve",
-    "start_express": "node scripts/biuro_podrozy.js",
+    "start": "nodemon scripts/biuro_podrozy.mjs",
     "watch": "npm-watch",
     "eslint_scripts": "./eslint_test.sh"
   },
   "devDependencies": {
-    "eslint": "^8.13.0"
+    "eslint": "^8.13.0",
+    "nodemon": "^2.0.15"
   },
   "watch": {
     "eslint_scripts": {

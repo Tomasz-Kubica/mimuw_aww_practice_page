@@ -1,0 +1,23 @@
+doctype html
+block scripts
+head 
+  title
+    block title
+      | Biuro podróży
+  link(rel='stylesheet' href='/styles/common_style.css')
+  block styles
+header
+  img.logo(src='/images/logol.png' alt='logo')
+  nav
+    menu
+      a(href='glowna', class=(tab_name === 'glowna' ? 'active_tab' : undefined))  Strona główna
+      a(href='wycieczka', class=(tab_name === 'wycieczka' ? 'active_tab' : undefined))  Wycieczka 
+      a(href='formularz', class=(tab_name === 'formularz' ? 'active_tab' : undefined))  Formularz 
+      a(href='')  Moje konto 
+.content
+  block content
+footer
+  p Biuro podr&oacute;&zdot;y, 2022
+  a(href='') O firmie
+  a(href='') polityka prywatno&sacute;ci
+  a(href='') Kontakt

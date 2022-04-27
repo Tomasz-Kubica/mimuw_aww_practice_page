@@ -1,0 +1,55 @@
+extends shared_layout
+
+block scripts
+  script(type='module').
+    import {komunikat} from './scripts/modul.mjs';
+    console.log(komunikat);
+
+block styles
+  link(rel='stylesheet' href='/styles/main_style.css')
+
+block content
+  aside
+    .promocje
+      h1
+        | Promocje
+      h2
+        | G&oacute;ry promocja
+      p
+        | od 30 do 31 luteg
+      a(href='') rezerwuj
+      h2
+        | Inna promocja
+      p
+        | od 21 do 37 kwietnia
+      a(href='') rezerwuj
+      h2
+        | Ostateczna oferta promocyjna
+      p
+        | od wczoraj do jutro
+      a(href='') rezerwuj
+    .porady
+      h1
+        | Porady
+      p
+        | Co zabra&cacute; na wycieczk&eogon;?
+      p
+        | Kiedy najlepiej wyjecha&cacute;?
+      p
+        | Jakie buty s&aogon; najwygodniejsze?
+  main
+    case Object.keys(lista_wycieczek).length
+      when 0
+        .error_message
+          | Brak wycieczek
+      default
+        each wycieczka, id in lista_wycieczek
+          section
+            img(src='/images/' + wycieczka.zdiecie alt='(obrazek przedstawiający wycieczkę)')
+            .opis
+              h1
+                | #{wycieczka.nazwa}
+              p.streszczenie
+                | #{wycieczka.streszczenie}
+              p.cena cena: #{wycieczka.cena.toFixed(2)} zł
+              a(href='/wycieczka/' + id) Zarezerwuj

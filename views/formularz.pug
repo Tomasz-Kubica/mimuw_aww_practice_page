@@ -1,0 +1,50 @@
+extends shared_layout
+
+block title 
+  | Formularz rezerwacji
+
+block scripts
+  script(type='module').
+    import {add_form_check_listener} from './scripts/modul.mjs';
+    import {add_focus_listeners} from './scripts/modul.mjs';
+    let form = document.querySelector(".reserve_form");
+    add_form_check_listener(form);
+    let body = document.querySelector("body");
+    add_focus_listeners(body);
+    import {komunikat} from './scripts/modul.mjs';
+    console.log(komunikat);
+
+block styles
+  link(rel='stylesheet' href='/styles/formularz_style.css')
+
+block content
+  form.reserve_form
+    label(for='name') imi&eogon;
+    input#name(type='text')
+    p.error_message
+    label(for='surname') nazwisko
+    input#surname(type='text')
+    p.error_message
+    label(for='ile_osob') ile os&oacute;b
+    input#ile_osob(type='number')
+    label(for='data_poczatek') data rozpocz&eogon;cia
+    input#data_poczatek(type='date')
+    button(type='submit') submit
+  table
+    thead
+      tr
+        th(scope='col')
+          | pole 1
+        th(scope='col')
+          | pole 2
+    tbody
+      tr
+        td
+          | test 1.1
+        td
+          | test 1.2
+      tr
+        td
+          | test 2.1
+        td
+          | test 2.2

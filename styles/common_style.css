@@ -73,6 +73,16 @@ body {
   align-self: center;
 }
 
+.active_tab {
+  color: rgb(36, 179, 17);
+}
+
+.error_message {
+  size: 100%;
+  display: flex;
+  align-self: center;
+}
+
 @media screen and (max-width: 1000px) {
   header {
     flex-direction: column;

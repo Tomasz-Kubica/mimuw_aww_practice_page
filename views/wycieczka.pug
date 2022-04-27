@@ -1,0 +1,41 @@
+extends shared_layout
+
+block title 
+  | Strona wycieczki
+
+block styles
+  link(rel='stylesheet' href='/styles/wycieczka_style.css')
+
+block content
+  - if (lista_wycieczek.hasOwnProperty(id_wycieczki))
+    - let wycieczka = lista_wycieczek[id_wycieczki];
+    img.trip-image(src='/images/' + wycieczka.zdiecie alt='image')
+    h1
+      | #{wycieczka.nazwa}
+    p
+      | #{wycieczka.streszczenie}
+    h2
+      | #{wycieczka.tytul_opisu}
+    each paragraf in wycieczka.opis
+      p
+        | #{paragraf}
+    h2  Najwa&zdot;niejsze informacje 
+    ul.most-important-info-list
+      li  termin: wakacje 
+      li  cena: #{wycieczka.cena.toFixed(2)} zł; 
+      li  transport we w&lstrok;asnym zakresie 
+      li  zakwaterowanie we w&lstrok;asnym zakresie
+      li  wy&zdot;ywienie: brak 
+    h2  Program wycieczki 
+    ol
+      li  przyjazd 
+      li  pobyt 
+      li  odjazd 
+    .bottom-buttons-container
+      a.bottom-button.left-button(href='/glowna') Powr&oacute;t
+      a.bottom-button.right-button(href='/formularz/' + id_wycieczki) Zarezerwuj
+  - else
+    h1
+      | Wybrana wycieczka nie istnieje
+    .bottom-buttons-container
+      a.bottom-button.left-button(href='/glowna') Powr&oacute;t
