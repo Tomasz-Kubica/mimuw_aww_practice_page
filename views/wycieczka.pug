@@ -7,22 +7,20 @@ block styles
   link(rel='stylesheet' href='/styles/wycieczka_style.css')
 
 block content
-  - if (lista_wycieczek.hasOwnProperty(id_wycieczki))
-    - let wycieczka = lista_wycieczek[id_wycieczki];
-    img.trip-image(src='/images/' + wycieczka.zdiecie alt='image')
+  - if (wycieczka != null)
+    img.trip-image(src=wycieczka.image alt='image')
     h1
-      | #{wycieczka.nazwa}
+      | #{wycieczka.name}
     p
-      | #{wycieczka.streszczenie}
+      | #{wycieczka.short_desc}
     h2
-      | #{wycieczka.tytul_opisu}
-    each paragraf in wycieczka.opis
-      p
-        | #{paragraf}
+      | Opis
+    p
+      | #{wycieczka.desc}
     h2  Najwa&zdot;niejsze informacje 
     ul.most-important-info-list
       li  termin: wakacje 
-      li  cena: #{wycieczka.cena.toFixed(2)} zł; 
+      li  cena: #{wycieczka.price.toFixed(2)} zł; 
       li  transport we w&lstrok;asnym zakresie 
       li  zakwaterowanie we w&lstrok;asnym zakresie
       li  wy&zdot;ywienie: brak 
@@ -33,7 +31,7 @@ block content
       li  odjazd 
     .bottom-buttons-container
       a.bottom-button.left-button(href='/glowna') Powr&oacute;t
-      a.bottom-button.right-button(href='/formularz/' + id_wycieczki) Zarezerwuj
+      a.bottom-button.right-button(href='/formularz/' + wycieczka.name) Zarezerwuj
   - else
     h1
       | Wybrana wycieczka nie istnieje

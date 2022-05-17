@@ -10,9 +10,9 @@ header
   img.logo(src='/images/logol.png' alt='logo')
   nav
     menu
-      a(href='glowna', class=(tab_name === 'glowna' ? 'active_tab' : undefined))  Strona główna
-      a(href='wycieczka', class=(tab_name === 'wycieczka' ? 'active_tab' : undefined))  Wycieczka 
-      a(href='formularz', class=(tab_name === 'formularz' ? 'active_tab' : undefined))  Formularz 
+      a(href='/glowna', class=(tab_name === 'glowna' ? 'active_tab' : undefined))  Strona główna
+      a(href='/wycieczka', class=(tab_name === 'wycieczka' ? 'active_tab' : undefined))  Wycieczka 
+      a(href='/formularz', class=(tab_name === 'formularz' ? 'active_tab' : undefined))  Formularz 
       a(href='')  Moje konto 
 .content
   block content

@@ -38,18 +38,18 @@ block content
       p
         | Jakie buty s&aogon; najwygodniejsze?
   main
-    case Object.keys(lista_wycieczek).length
+    case listaWycieczek.length
       when 0
         .error_message
           | Brak wycieczek
       default
-        each wycieczka, id in lista_wycieczek
+        each wycieczka in listaWycieczek
           section
-            img(src='/images/' + wycieczka.zdiecie alt='(obrazek przedstawiający wycieczkę)')
+            img(src=wycieczka.image alt='(obrazek przedstawiający wycieczkę)')
             .opis
               h1
-                | #{wycieczka.nazwa}
+                | #{wycieczka.name}
               p.streszczenie
-                | #{wycieczka.streszczenie}
-              p.cena cena: #{wycieczka.cena.toFixed(2)} zł
-              a(href='/wycieczka/' + id) Zarezerwuj
+                | #{wycieczka.short_desc}
+              p.cena cena: #{wycieczka.price.toFixed(2)} zł
+              a(href='/wycieczka/' + wycieczka.name) Zarezerwuj

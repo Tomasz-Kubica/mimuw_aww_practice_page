@@ -1,11 +1,15 @@
 import express from 'express';
-const app = express()
+
+// const { trips } = await import('./database.mjs');
+import { trips, requests } from './database.mjs';
+
+const app = express();
 
 app.set('view engine', 'pug');
 app.set('views', './views');
 
-let lista_wycieczek = {
-  '1': {
+const listaWycieczek = {
+  1: {
     nazwa: 'Wycieczka w góry',
     streszczenie: 'Krótki opis wycieczki w góry. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.',
     cena: 42.00,
@@ -13,7 +17,7 @@ let lista_wycieczek = {
     tytul_opisu: 'Opis wycieczki w góry',
     opis: ['Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.', 'Długi przykładowy tekst opisu wycieczki w góry. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.', 'Jeszcze więcej tekstu opisu wycieczki w góry. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.'],
   },
-  '2': {
+  2: {
     nazwa: 'Wycieczka gdzieś indziej',
     streszczenie: 'Nunc mattis nunc quis ipsum tristique, eu bibendum enim aliquet. Morbi gravida finibus magna, quis efficitur neque tincidunt at. Aenean aliquam eu velit a elementum.',
     cena: 215.00,
@@ -21,7 +25,7 @@ let lista_wycieczek = {
     tytul_opisu: 'Opis wycieczki 2',
     opis: ['Wymyślaniem opisów normalnie zają by się pewnie ktoś inny (Dział marketingu ???)', 'paragraf 1', 'paragraf 2', 'paragraf 3', 'paragraf 4', 'paragraf 5'],
   },
-  '3': {
+  3: {
     nazwa: 'Jeszcze jedna wycieczka',
     streszczenie: 'Suspendisse sed nibh fringilla, aliquet justo ac, venenatis elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent blandit feugiat felis, vel interdum nibh varius ac.',
     cena: 100.10,
@@ -31,42 +35,48 @@ let lista_wycieczek = {
   },
 };
 
+console.log('running');
+
+app.use(express.static('.'));
+
 app.get('*', (req, res, next) => {
-  let day = (new Date).getDate();
-  let month = (new Date).getMonth();
-  let year = (new Date).getFullYear();
-  let date_text = day + '/' + month + '/' + year;
-  console.log(date_text);
-  res.locals.date = date_text;
-  next()
+  const day = (new Date()).getDate();
+  const month = (new Date()).getMonth();
+  const year = (new Date()).getFullYear();
+  const dateText = `${day}/${month}/${year}`;
+  console.log(dateText);
+  res.locals.date = dateText;
+  next();
 });
 
-app.get('/date', function (req, res) {
+app.get('/date', (req, res) => {
   res.send(res.locals.date);
 });
 
-app.get('/test_view', function (req, res) {
+app.get('/test_view', (req, res) => {
   res.render('test_view');
 });
 
-app.get('/glowna', function (req, res) {
-  res.locals.lista_wycieczek = lista_wycieczek;
+app.get('/glowna', async (req, res) => {
+  const tripsTable = await trips.findAll();
+  for (let i = 0; i < tripsTable.length; i += 1) {
+    console.log(tripsTable[i].name);
+  }
+
+  res.locals.listaWycieczek = tripsTable;
   res.locals.tab_name = 'glowna';
   res.render('glowna');
 });
 
-app.get('/wycieczka/:id', function (req, res) {
-  res.locals.lista_wycieczek = lista_wycieczek;
-  res.locals.id_wycieczki = req.params.id;
+app.get('/wycieczka/:name', async (req, res) => {
+  res.locals.wycieczka = await trips.findByPk(req.params.name);
   res.locals.tab_name = 'wycieczka';
   res.render('wycieczka');
 });
 
-app.get('/formularz/:id', function (req, res) {
+app.get('/formularz/:id', (req, res) => {
   res.locals.tab_name = 'formularz';
   res.render('formularz');
 });
-
-app.use(express.static('.'));
 
 app.listen(8080);
