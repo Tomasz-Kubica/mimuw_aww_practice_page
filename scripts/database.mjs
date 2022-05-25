@@ -96,4 +96,4 @@ requests.belongsTo(trips, {
 await trips.sync(/*{ force: true }*/);
 await requests.sync(/*{ force: true }*/);
 
-export { trips, requests };
+export { trips, requests, sequelize };

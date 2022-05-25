@@ -1,53 +1,31 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import { Transaction } from 'sequelize';
+import { body, validationResult} from 'express-validator';
 
 // const { trips } = await import('./database.mjs');
-import { trips, requests } from './database.mjs';
+import { trips, requests, sequelize } from './database.mjs';
 
 const app = express();
 
 app.set('view engine', 'pug');
 app.set('views', './views');
 
-const listaWycieczek = {
-  1: {
-    nazwa: 'Wycieczka w góry',
-    streszczenie: 'Krótki opis wycieczki w góry. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.',
-    cena: 42.00,
-    zdiecie: 'Rysy,_szczyt.jpg',
-    tytul_opisu: 'Opis wycieczki w góry',
-    opis: ['Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.', 'Długi przykładowy tekst opisu wycieczki w góry. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.', 'Jeszcze więcej tekstu opisu wycieczki w góry. Donec blandit rhoncus massa sit amet interdum. Duis augue magna, cursus ornare purus vitae, tristique fermentum libero. Vestibulum finibus enim vel neque vulputate, quis feugiat metus consectetur. Suspendisse ipsum risus, sodales ac efficitur quis, facilisis sed erat.'],
-  },
-  2: {
-    nazwa: 'Wycieczka gdzieś indziej',
-    streszczenie: 'Nunc mattis nunc quis ipsum tristique, eu bibendum enim aliquet. Morbi gravida finibus magna, quis efficitur neque tincidunt at. Aenean aliquam eu velit a elementum.',
-    cena: 215.00,
-    zdiecie: 'Jez.-Osowskie-4-1024x750.jpg',
-    tytul_opisu: 'Opis wycieczki 2',
-    opis: ['Wymyślaniem opisów normalnie zają by się pewnie ktoś inny (Dział marketingu ???)', 'paragraf 1', 'paragraf 2', 'paragraf 3', 'paragraf 4', 'paragraf 5'],
-  },
-  3: {
-    nazwa: 'Jeszcze jedna wycieczka',
-    streszczenie: 'Suspendisse sed nibh fringilla, aliquet justo ac, venenatis elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent blandit feugiat felis, vel interdum nibh varius ac.',
-    cena: 100.10,
-    zdiecie: 'Jez.-Osowskie-4-1024x750.jpg',
-    tytul_opisu: 'Opis wycieczki 3',
-    opis: ['Oto jest pragraf 1', 'Oto jest pragraf 2', 'Oto jest pragraf 3', 'Oto jest pragraf 4', 'Oto jest pragraf 5', 'Oto jest pragraf 6', 'Oto jest paragraf 7', 'Oto jest paragraf 8', 'Oto jest paragraf 9', 'Oto jest paragraf 10'],
-  },
-};
-
 console.log('running');
 
 app.use(express.static('.'));
 
-app.get('*', (req, res, next) => {
-  const day = (new Date()).getDate();
-  const month = (new Date()).getMonth();
-  const year = (new Date()).getFullYear();
-  const dateText = `${day}/${month}/${year}`;
-  console.log(dateText);
-  res.locals.date = dateText;
-  next();
-});
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// app.get('*', (req, res, next) => {
+//   const day = (new Date()).getDate();
+//   const month = (new Date()).getMonth();
+//   const year = (new Date()).getFullYear();
+//   const dateText = `${day}/${month}/${year}`;
+//   console.log(dateText);
+//   res.locals.date = dateText;
+//   next();
+// });
 
 app.get('/date', (req, res) => {
   res.send(res.locals.date);
@@ -59,18 +37,19 @@ app.get('/test_view', (req, res) => {
 
 app.get('/glowna', async (req, res) => {
   const tripsTable = await trips.findAll();
-  for (let i = 0; i < tripsTable.length; i += 1) {
-    console.log(tripsTable[i].name);
-  }
+  // for (let i = 0; i < tripsTable.length; i += 1) {
+  //   console.log(tripsTable[i].name);
+  // }
 
   res.locals.listaWycieczek = tripsTable;
   res.locals.tab_name = 'glowna';
   res.render('glowna');
 });
 
-app.get('/wycieczka/:name', async (req, res) => {
+app.get('/wycieczka/:name/:popup_message?', async (req, res) => {
   res.locals.wycieczka = await trips.findByPk(req.params.name);
   res.locals.tab_name = 'wycieczka';
+  res.locals.popup_message = req.params.popup_message;
   res.render('wycieczka');
 });
 
@@ -78,5 +57,63 @@ app.get('/formularz/:id', (req, res) => {
   res.locals.tab_name = 'formularz';
   res.render('formularz');
 });
+
+app.post(
+  '/formularz/:id',
+  body('email').isEmail().withMessage('Niepoprawny email'),
+  body('name').isLength({ min: 1, max: 40 }).withMessage('Imię musi mieć od 1 do 40 znaków'),
+  body('surname').isLength({ min: 1, max: 40 }).withMessage('Nazwisko musi mieć od 1 do 40 znaków'),
+  body('ile_osob').isInt({ min: 1 }).withMessage('Ilość osób musi być większa od 0'),
+  async (req, res) => {
+    res.locals.tab_name = 'formularz';
+    res.locals.errorDescription = null;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(errors.array());
+      res.locals.errorDescription = errors.array().at(0).msg;
+      res.render('formularz');
+      return;
+    }
+
+    console.log(req.params.id);
+    console.log(req.body.name);
+    console.log(req.body.surname);
+    console.log(req.body.ile_osob);
+    console.log(req.body.email);
+
+    const transaction = await sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
+    });
+
+    const trip = await trips.findByPk(req.params.id, { transaction });
+    if (trip === null) {
+      transaction.rollback();
+      res.locals.errorDescription = `Nie znaleziono wycieczki o podanym id (${req.params.id}).`;
+      res.render('formularz');
+      return;
+    }
+    if (trip.amount < req.body.ile_osob) {
+      transaction.rollback();
+      res.locals.errorDescription = `Nie ma wystarczającej ilości miejsc na wycieczce. Pozostało ${trip.amount} miejsc.`;
+      res.render('formularz');
+      return;
+    }
+    console.log(trip.amount);
+    console.log(req.body.ile_osob);
+    console.log(trip.amount - req.body.ile_osob);
+    await trip.update({
+      amount: trip.amount - req.body.ile_osob,
+    }, { transaction });
+    await requests.create({
+      tripName: req.params.id,
+      name: req.body.name,
+      surname: req.body.surname,
+      email: req.body.email,
+      amount: req.body.ile_osob,
+    }, { transaction });
+
+    res.redirect(`/wycieczka/${req.params.id}/${'Pomyślnie zarezerwowano wycieczkę!'}`);
+  },
+);
 
 app.listen(8080);

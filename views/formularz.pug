@@ -4,31 +4,38 @@ block title
   | Formularz rezerwacji
 
 block scripts
-  script(type='module').
-    import {add_form_check_listener} from './scripts/modul.mjs';
-    import {add_focus_listeners} from './scripts/modul.mjs';
-    let form = document.querySelector(".reserve_form");
-    add_form_check_listener(form);
-    let body = document.querySelector("body");
-    add_focus_listeners(body);
-    import {komunikat} from './scripts/modul.mjs';
-    console.log(komunikat);
+  script(type='module')
+    | import {add_form_check_listener} from '/scripts/modul.mjs';
+    | import {add_focus_listeners} from '/scripts/modul.mjs';
+    | let form = document.querySelector(".reserve_form");
+    | add_form_check_listener(form);
+    | let body = document.querySelector("body");
+    | add_focus_listeners(body);
+    | import {komunikat} from '/scripts/modul.mjs';
+    | console.log(komunikat);
+    
+    - if(errorDescription != null)
+      | import {spawn_popup} from '/scripts/modul.mjs';
+      | spawn_popup("#{errorDescription}", body);
+      
 
 block styles
   link(rel='stylesheet' href='/styles/formularz_style.css')
 
 block content
-  form.reserve_form
+  form.reserve_form(method='post')
     label(for='name') imi&eogon;
-    input#name(type='text')
+    input#name(type='text', name='name')
     p.error_message
     label(for='surname') nazwisko
-    input#surname(type='text')
+    input#surname(type='text', name='surname')
     p.error_message
     label(for='ile_osob') ile os&oacute;b
-    input#ile_osob(type='number')
-    label(for='data_poczatek') data rozpocz&eogon;cia
-    input#data_poczatek(type='date')
+    input#ile_osob(type='number', name='ile_osob')
+    p.error_message
+    label(for='email') email
+    input#email(type='email', name='email')
+    p.error_message
     button(type='submit') submit
   table
     thead

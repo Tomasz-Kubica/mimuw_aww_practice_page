@@ -96,3 +96,22 @@ body {
     margin-top: 0.5ex;
   }
 }
+
+/* popup */
+.success-popup {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.success-popup-content {
+  background-color: white;
+  margin: auto;
+  margin-top: 15%;
+  padding: 20px;
+  width: 500px;
+}

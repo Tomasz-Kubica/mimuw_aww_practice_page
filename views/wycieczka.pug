@@ -3,6 +3,14 @@ extends shared_layout
 block title 
   | Strona wycieczki
 
+block scripts
+  script(type='module')
+    | let body = document.querySelector("body");
+    |
+    - if(popup_message != null)
+      | import {spawn_popup} from '/scripts/modul.mjs';
+      | spawn_popup("#{popup_message}", body);
+
 block styles
   link(rel='stylesheet' href='/styles/wycieczka_style.css')
 
