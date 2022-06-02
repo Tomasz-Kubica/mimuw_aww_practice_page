@@ -88,12 +88,43 @@ const requests = sequelize.define('Request', {
   },
 });
 
+const users = sequelize.define('User', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  last_name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+});
+
 trips.hasMany(requests);
 requests.belongsTo(trips, {
   foreignKey: 'tripName',
 });
 
-await trips.sync(/*{ force: true }*/);
-await requests.sync(/*{ force: true }*/);
+// user.hasMany(requests);
+// requests.belongsTo(user, {
+//   foreignKey: 'id',
+// });
 
-export { trips, requests, sequelize };
+await trips.sync(/* { force: true } */);
+await requests.sync(/* { force: true } */);
+await users.sync(/* { force: true } */);
+
+export { trips, requests, sequelize, users };

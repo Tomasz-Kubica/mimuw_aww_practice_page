@@ -1,7 +1,8 @@
-import { trips, requests } from './database.mjs';
+import { trips, requests, users } from './database.mjs';
 
 await trips.sync({ force: true });
 await requests.sync({ force: true });
+await users.sync({ force: true });
 
 const mountainTrip = trips.build({
   name: 'Mountain Trip',

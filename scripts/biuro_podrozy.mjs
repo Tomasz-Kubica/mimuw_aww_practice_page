@@ -82,10 +82,10 @@ app.post(
     console.log(req.body.email);
 
     const transaction = await sequelize.transaction({
-      isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
     });
 
-    const trip = await trips.findByPk(req.params.id, { transaction });
+    const trip = await trips.findByPk(req.params.id, { lock: true, transaction });
     if (trip === null) {
       transaction.rollback();
       res.locals.errorDescription = `Nie znaleziono wycieczki o podanym id (${req.params.id}).`;
@@ -111,7 +111,7 @@ app.post(
       email: req.body.email,
       amount: req.body.ile_osob,
     }, { transaction });
-
+    transaction.commit();
     res.redirect(`/wycieczka/${req.params.id}/${'Pomyślnie zarezerwowano wycieczkę!'}`);
   },
 );

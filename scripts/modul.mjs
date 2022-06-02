@@ -23,8 +23,8 @@ function check_input(form) {
   const correct_name = check_text_input_length(name, 'niepoprawne imię', checkLength);
   const correct_surname = check_text_input_length(surname, 'niepoprawne nazwisko', checkLength);
   const correct_ile_osob = check_text_input_length(ile_osob, 'liczba osób musi być dodatnia', checkNotZero);
-  // return correct_name && correct_surname && correct_surname && correct_ile_osob;
-  return true;
+  return correct_name && correct_surname && correct_surname && correct_ile_osob;
+  // return true;
 }
 
 function get_popup(message) {
