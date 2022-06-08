@@ -98,7 +98,7 @@ const users = sequelize.define('User', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  last_name: {
+  surname: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -118,10 +118,11 @@ requests.belongsTo(trips, {
   foreignKey: 'tripName',
 });
 
-// user.hasMany(requests);
-// requests.belongsTo(user, {
-//   foreignKey: 'id',
-// });
+users.hasMany(requests);
+requests.belongsTo(users, {
+  targetKey: 'email',
+  foreignKey: 'email',
+});
 
 await trips.sync(/* { force: true } */);
 await requests.sync(/* { force: true } */);

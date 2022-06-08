@@ -1,9 +1,11 @@
 extends shared_layout
 
 block scripts
-  script(type='module').
-    import {komunikat} from './scripts/modul.mjs';
-    console.log(komunikat);
+  script(type='module')
+    - if(popup_message != null)
+      | let body = document.querySelector("body");
+      | import {spawn_popup} from '/scripts/modul.mjs';
+      | spawn_popup("#{popup_message}", body);
 
 block styles
   link(rel='stylesheet' href='/styles/main_style.css')

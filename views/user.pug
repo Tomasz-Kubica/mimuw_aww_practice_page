@@ -1,0 +1,29 @@
+extends shared_layout
+
+block scripts
+  script(type='module')
+    - if(popup_message != null)
+      | let body = document.querySelector("body");
+      | import {spawn_popup} from '/scripts/modul.mjs';
+      | spawn_popup("#{popup_message}", body);
+
+block styles
+  link(rel='stylesheet' href='/styles/main_style.css')
+
+block content
+  main
+    h1 
+      | #{logged_user.name} #{logged_user.surname}
+    p
+      | #{logged_user.email}
+    case requests.length
+      when 0
+        .error_message
+          | Brak rezerwacji
+      default
+        each request in requests
+          section
+            ul
+              li
+                | Nazwa wycieczki: #{request.tripName} <br>
+                | Liczba zarezerwowanych miejsc: #{request.amount}

@@ -1,15 +1,15 @@
 extends shared_layout
 
 block title 
-  | Formularz rezerwacji
+  | Formularz rejestracji
 
 block scripts
   script(type='module')
     | import {add_form_check_listener} from '/scripts/modul.mjs';
-    | import {check_reservation_input} from '/scripts/modul.mjs';
+    | import {check_registration_input} from '/scripts/modul.mjs';
     | import {add_focus_listeners} from '/scripts/modul.mjs';
     | let form = document.querySelector(".reserve_form");
-    | add_form_check_listener(form, check_reservation_input);
+    | add_form_check_listener(form, check_registration_input);
     | let body = document.querySelector("body");
     | let content = document.querySelector(".content");
     | add_focus_listeners(content);
@@ -29,13 +29,21 @@ block content
     label(for='name') imi&eogon;
     input#name(type='text', name='name')
     p.error_message
+
     label(for='surname') nazwisko
     input#surname(type='text', name='surname')
     p.error_message
-    label(for='ile_osob') ile os&oacute;b
-    input#ile_osob(type='number', name='ile_osob')
-    p.error_message
+
     label(for='email') email
     input#email(type='email', name='email')
     p.error_message
-    button(type='submit') submit
+
+    label(for='password') hasło
+    input#password(type='password', name='password')
+    p.error_message
+
+    label(for='password_repeat') powtórzone hasło
+    input#password_repeat(type='password', name='password_repeat')
+    p.error_message
+
+    button(type='submit') register

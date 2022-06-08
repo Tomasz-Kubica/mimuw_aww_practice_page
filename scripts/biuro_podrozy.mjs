@@ -2,9 +2,13 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { Transaction } from 'sequelize';
 import { body, validationResult} from 'express-validator';
+import bcrypt from 'bcrypt';
+import session from 'express-session';
 
 // const { trips } = await import('./database.mjs');
-import { trips, requests, sequelize } from './database.mjs';
+import { trips, requests, users, sequelize } from './database.mjs';
+
+const saltRounds = 10;
 
 const app = express();
 
@@ -17,15 +21,13 @@ app.use(express.static('.'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.get('*', (req, res, next) => {
-//   const day = (new Date()).getDate();
-//   const month = (new Date()).getMonth();
-//   const year = (new Date()).getFullYear();
-//   const dateText = `${day}/${month}/${year}`;
-//   console.log(dateText);
-//   res.locals.date = dateText;
-//   next();
-// });
+app.set('trust proxy', 1); // trust first proxy
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {},
+}));
 
 app.get('/date', (req, res) => {
   res.send(res.locals.date);
@@ -35,7 +37,7 @@ app.get('/test_view', (req, res) => {
   res.render('test_view');
 });
 
-app.get('/glowna', async (req, res) => {
+app.get('/glowna/:popup_message?', async (req, res) => {
   const tripsTable = await trips.findAll();
   // for (let i = 0; i < tripsTable.length; i += 1) {
   //   console.log(tripsTable[i].name);
@@ -43,6 +45,7 @@ app.get('/glowna', async (req, res) => {
 
   res.locals.listaWycieczek = tripsTable;
   res.locals.tab_name = 'glowna';
+  res.locals.popup_message = req.params.popup_message;
   res.render('glowna');
 });
 
@@ -115,5 +118,136 @@ app.post(
     res.redirect(`/wycieczka/${req.params.id}/${'Pomyślnie zarezerwowano wycieczkę!'}`);
   },
 );
+
+app.get(
+  '/registration', (req, res) => {
+    res.locals.tab_name = 'zarejstruj się';
+    res.render('registration');
+  });
+
+app.post(
+  '/registration',
+  body('email').isEmail().withMessage('Niepoprawny email'),
+  body('name').isLength({ min: 1, max: 40 }).withMessage('Imię musi mieć od 1 do 40 znaków'),
+  body('surname').isLength({ min: 1, max: 40 }).withMessage('Nazwisko musi mieć od 1 do 40 znaków'),
+  body('password').isLength({ min: 5 }).withMessage('Hasło musi mieć przynajmniej 5 znaków'),
+  body('password_repeat').isLength({ min: 5 }).withMessage('Hasło musi mieć przynajmniej 5 znaków'),
+  async (req, res) => {
+    res.locals.tab_name = 'zarejstruj się';
+    const errors = validationResult(req);
+    let errorMessage = '';
+    if (!errors.isEmpty()) {
+      errorMessage = errors.array().at(0).msg;
+    } else if (req.body.password !== req.body.password_repeat) {
+      errorMessage = 'Powtórzone hasło musi być takie samo jak oryginalne';
+    }
+    if (errorMessage.length > 0) {
+      // console.log(errors.array());
+      res.locals.errorDescription = errorMessage;
+      res.render('registration');
+      return;
+    }
+
+    try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      await users.create({
+        email: req.body.email,
+        name: req.body.name,
+        surname: req.body.surname,
+        password: hashedPassword,
+      });
+    } catch (err) {
+      res.locals.errorDescription = 'Nie udało się utworzyć użytkownika';
+      res.render('registration');
+      return;
+    }
+    res.redirect(`/glowna/${'Pomyślnie zarejestrowano użytkownika!'}`);
+  },
+);
+
+app.get(
+  '/login', (req, res) => {
+    res.locals.tab_name = 'zaloguj się';
+    if (req.session.logged_email) {
+      res.redirect('/user');
+      return;
+    }
+    res.render('login');
+  });
+
+app.post(
+  '/login',
+  body('email').isEmail().withMessage('Niepoprawny email'),
+  body('password').isLength({ min: 5 }).withMessage('Hasło musi mieć przynajmniej 5 znaków'),
+  async (req, res) => {
+    res.locals.tab_name = 'zaloguj się';
+    res.locals.form_email = req.body.email;
+    res.locals.form_password = req.body.password;
+    const errors = validationResult(req);
+    let errorMessage = '';
+    if (!errors.isEmpty()) {
+      errorMessage = errors.array().at(0).msg;
+      res.locals.errorDescription = errorMessage;
+      res.render('login');
+      return;
+    }
+    const user = await users.findOne({
+      where: {
+        email: req.body.email,
+      },
+    });
+    if (user === null) {
+      res.locals.errorDescription = 'Nie znaleziono użytkownika o podanym emailu';
+      res.render('login');
+      return;
+    }
+    console.log(req.body.password);
+    console.log(user.password);
+    const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+    if (!isPasswordValid) {
+      res.locals.errorDescription = 'Niepoprawne hasło';
+      res.render('login');
+      return;
+    }
+    req.session.logged_email = req.body.email;
+    res.redirect('/user');
+  },
+);
+
+app.get(
+  '/logout', (req, res) => {
+    res.locals.tab_name = 'wyloguj się';
+    req.session.logged_email = null;
+    res.redirect('/glowna');
+  });
+
+app.get(
+  '/user', async (req, res) => {
+    res.locals.tab_name = 'użytkownik';
+    if (!req.session.logged_email) {
+      res.redirect(`/glowna/${'nie zalogowano'}`);
+      return;
+    }
+    const user = await users.findOne({
+      where: {
+        email: req.session.logged_email,
+      },
+      include: [{
+        model: requests,
+      }],
+    });
+    const requests2 = await requests.findAll({
+      where: {
+        email: req.session.logged_email,
+      },
+    });
+    console.log(requests2);
+    console.log("length: " + requests2.length);
+    res.locals.logged_user = user;
+    res.locals.requests = requests2; //user['Requests'];
+    // console.log(user);
+    // console.log(user['Requests']);
+    res.render('user');
+  });
 
 app.listen(8080);

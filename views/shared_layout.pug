@@ -11,9 +11,11 @@ header
   nav
     menu
       a(href='/glowna', class=(tab_name === 'glowna' ? 'active_tab' : undefined))  Strona główna
-      a(href='/wycieczka', class=(tab_name === 'wycieczka' ? 'active_tab' : undefined))  Wycieczka 
-      a(href='/formularz', class=(tab_name === 'formularz' ? 'active_tab' : undefined))  Formularz 
-      a(href='')  Moje konto 
+      a(href='', class=(tab_name === 'wycieczka' ? 'active_tab' : undefined))  Wycieczka
+      a(href='', class=(tab_name === 'formularz' ? 'active_tab' : undefined))  Formularz
+      a(href='/registration', class=(tab_name === 'zarejstruj się' ? 'active_tab' : undefined))  Zarejstruj się
+      a(href='/login', class=(tab_name === 'zaloguj się' ? 'active_tab' : undefined))  Zaloguj się
+      a(href='/logout', class=(tab_name === 'wyloguj się' ? 'active_tab' : undefined))  Wyloguj się
 .content
   block content
 footer
