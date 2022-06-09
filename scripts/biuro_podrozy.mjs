@@ -26,7 +26,9 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: {},
+  cookie: {
+    sameSite: true,
+  },
 }));
 
 app.get('/date', (req, res) => {
@@ -63,7 +65,7 @@ app.get('/formularz/:id', (req, res) => {
 
 app.post(
   '/formularz/:id',
-  body('email').isEmail().withMessage('Niepoprawny email'),
+  // body('email').isEmail().withMessage('Niepoprawny email'),
   body('name').isLength({ min: 1, max: 40 }).withMessage('Imię musi mieć od 1 do 40 znaków'),
   body('surname').isLength({ min: 1, max: 40 }).withMessage('Nazwisko musi mieć od 1 do 40 znaków'),
   body('ile_osob').isInt({ min: 1 }).withMessage('Ilość osób musi być większa od 0'),
@@ -71,12 +73,17 @@ app.post(
     res.locals.tab_name = 'formularz';
     res.locals.errorDescription = null;
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.log(errors.array());
-      res.locals.errorDescription = errors.array().at(0).msg;
+    if (!errors.isEmpty() || req.session.logged_email == null) {
+      if (req.session.logged_email == null) {
+        res.locals.errorDescription = 'Zaloguj się';
+      } else {
+        console.log(errors.array());
+        res.locals.errorDescription = errors.array().at(0).msg;
+      }
       res.render('formularz');
       return;
     }
+
 
     console.log(req.params.id);
     console.log(req.body.name);
@@ -111,7 +118,7 @@ app.post(
       tripName: req.params.id,
       name: req.body.name,
       surname: req.body.surname,
-      email: req.body.email,
+      email: req.session.logged_email,
       amount: req.body.ile_osob,
     }, { transaction });
     transaction.commit();
