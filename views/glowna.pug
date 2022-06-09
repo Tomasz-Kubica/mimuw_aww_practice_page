@@ -7,6 +7,27 @@ block scripts
       | import {spawn_popup} from '/scripts/modul.mjs';
       | spawn_popup("#{popup_message}", body);
 
+  script(src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js")
+  script(type='module').
+    let template = Handlebars.compile(' \
+    {{#each trips}} \
+      <section> \
+        <img src="{{image}}" alt="(obrazek przedstawiający wycieczkę)"> \
+      </section> \
+      <div class="opis"> \
+        <h1>{{name}}</h1> \
+        <p class="streszczenie">{{short_desc}}</p> \
+        <p class="cena">cena: {{price}} zł</p><a href="/wycieczka/{{name}}">Zarezerwuj</a> \
+      </div> \
+    {{/each}} \
+    ');
+    let trips = await fetch('/api/wycieczki/all/');
+    let data = await trips.json();
+    let rendered = template(data);
+    let main = document.querySelector("main");
+    main.innerHTML = rendered;
+    console.log("end");
+
 block styles
   link(rel='stylesheet' href='/styles/main_style.css')
 
@@ -40,18 +61,4 @@ block content
       p
         | Jakie buty s&aogon; najwygodniejsze?
   main
-    case listaWycieczek.length
-      when 0
-        .error_message
-          | Brak wycieczek
-      default
-        each wycieczka in listaWycieczek
-          section
-            img(src=wycieczka.image alt='(obrazek przedstawiający wycieczkę)')
-            .opis
-              h1
-                | #{wycieczka.name}
-              p.streszczenie
-                | #{wycieczka.short_desc}
-              p.cena cena: #{wycieczka.price.toFixed(2)} zł
-              a(href='/wycieczka/' + wycieczka.name) Zarezerwuj
+    | tekst

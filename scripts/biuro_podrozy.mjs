@@ -250,4 +250,20 @@ app.get(
     res.render('user');
   });
 
+app.get('/api/wycieczki/all/', async (req, res) => {
+  // res.send(await trips.findAll());
+  const tripsToSend = {
+    trips: [
+      {
+        image: '',
+        name: 'Wycieczka do Krakowa',
+        desc: 'Wycieczka do Krakowa normal desc',
+        short_desc: 'Wycieczka do Krakowa short desc',
+        price: 42,
+      }
+    ],
+  };
+  res.send(tripsToSend);
+});
+
 app.listen(8080);
